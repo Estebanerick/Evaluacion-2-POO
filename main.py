@@ -132,7 +132,15 @@ def buscar_por_nombre_interactivo():
     dueños = buscar_dueno_por_nombre(nombre)
     if dueños:
         for d in dueños:
+            mascotas_del_dueño = obtener_mascotas_por_dueno(d['id_dueno'])
             print(f"{d['id_dueno']} | {d['nombre']} | {d['telefono']} | {d['email']}")
+            if mascotas_del_dueño:
+                print("   Mascotas:")
+                for mascota in mascotas_del_dueño:
+                    print(f"     - {mascota['nombre']} ({mascota['especie']} - {mascota['raza']})")
+            else:
+                print("   No tiene mascotas registradas")
+            print()
     else:
         print("  No se encontraron dueños")
     
