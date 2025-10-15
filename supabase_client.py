@@ -18,8 +18,7 @@ class ConexionBD:
                 raise ValueError("❌ Faltan variables de entorno en .env")
             
             print("🔗 Conectando a Supabase...")
-            print(f"📡 URL: {self.url}")
-            print(f"🔑 KEY: {self.key[:20]}...")
+            
             
             self.client = create_client(self.url, self.key)
             print("✅ Cliente Supabase creado exitosamente")
