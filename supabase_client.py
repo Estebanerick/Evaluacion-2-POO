@@ -200,13 +200,7 @@ def test_conexion():
     
     if tablas_conectadas > 0:
         print(f"\n🎉 ¡CONEXIÓN EXITOSA! {tablas_conectadas}/4 tablas accesibles")
-        
-        # Mostrar resumen de datos
-        print("\n📊 RESUMEN DE DATOS:")
-        for tabla, resultado in resultados.items():
-            if resultado["conectada"]:
-                print(f"   📁 {tabla}: {len(resultado['data'])} registros disponibles")
-        
+    
         return True
     else:
         print("\n❌ NO SE PUDO ACCEDER A NINGUNA TABLA")
