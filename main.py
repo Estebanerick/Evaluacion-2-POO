@@ -5,17 +5,44 @@ def mostrar_menu():
     print("\n" + "="*50)
     print("       SISTEMA DE GESTIÓN VETERINARIA")
     print("="*50)
+    print("1. Gestionar Registros")
+    print("2. Buscar por Nombre")
+    print("3. Reporte de Historial Clínico")
+    print("4. Ver Estadísticas")
+    print("5. Listar Todos los Registros")
+    print("6. Salir")
+    print("="*50)
+
+def mostrar_submenu_registros():
+    print("\n--- GESTIÓN DE REGISTROS ---")
     print("1. Registrar Dueño")
     print("2. Registrar Mascota")
     print("3. Registrar Veterinario")
     print("4. Registrar Consulta Médica")
-    print("5. Buscar por Nombre")
-    print("6. Reporte de Historial Clínico")
-    print("7. Ver Estadísticas")
-    print("8. Listar Todos los Registros")
-    print("9. Salir")
+    print("5. Volver al Menú Principal")
     print("="*50)
 
+def gestionar_registros_interactivo():
+    while True:
+        mostrar_submenu_registros()
+        opcion = input("Seleccione una opción (1-5): ").strip()
+
+        if opcion == "1":
+            registrar_dueno_interactivo()
+        elif opcion == "2":
+            registrar_mascota_interactivo()
+        elif opcion == "3":
+            registrar_veterinario_interactivo()
+        elif opcion == "4":
+            registrar_consulta_interactivo()
+        elif opcion == "5":
+            print("Volviendo al menú principal...")
+            break
+        else:
+            print("Opción inválida. Intente de nuevo.")
+        
+        input("\nPresione Enter para continuar...")
+        
 def registrar_dueno_interactivo():
     print("\n--- REGISTRAR NUEVO DUEÑO ---")
     nombre = input("Nombre completo: ").strip()
@@ -252,25 +279,19 @@ def main():
     
     while True:
         mostrar_menu()
-        opcion = input("Seleccione una opción (1-9): ").strip()
+        opcion = input("Seleccione una opción (1-6): ").strip()
         
         if opcion == "1":
-            registrar_dueno_interactivo()
+            gestionar_registros_interactivo()
         elif opcion == "2":
-            registrar_mascota_interactivo()
-        elif opcion == "3":
-            registrar_veterinario_interactivo()
-        elif opcion == "4":
-            registrar_consulta_interactivo()
-        elif opcion == "5":
             buscar_por_nombre_interactivo()
-        elif opcion == "6":
+        elif opcion == "3":
             reporte_historial_interactivo()
-        elif opcion == "7":
+        elif opcion == "4":
             ver_estadisticas_interactivo()
-        elif opcion == "8":
+        elif opcion == "5":
             listar_registros_interactivo()
-        elif opcion == "9":
+        elif opcion == "6":
             print("\n ¡Gracias por usar el Sistema de Gestión Veterinaria!")
             break
         else:
