@@ -4,23 +4,14 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-class DatabaseConnection:
-    _instance = None
-    
-    def __new__(cls):
-        if cls._instance is None:
-            cls._instance = super().__new__(cls)
-            cls._instance._initialize()
-        return cls._instance
-    
-    def _initialize(self):
-        """Inicializar conexión con Supabase"""
+class ConexionBD:
+    def __init__(self):
         self.url = os.getenv("SUPABASE_URL")
         self.key = os.getenv("SUPABASE_KEY")
         self.client: Client = None
-        self.connect()
+        self.conectar()
     
-    def connect(self):
+    def conectar(self):
         """Establecer conexión con Supabase"""
         try:
             if not self.url or not self.key:
@@ -34,10 +25,6 @@ class DatabaseConnection:
             print(f"❌ Error en conexión: {e}")
             self.client = None
     
-    def get_client(self):
-        """Obtener cliente de Supabase"""
-        return self.client
-
     def probar_tablas(self):
         """Probar acceso a las tablas"""
         if not self.client:
@@ -45,50 +32,34 @@ class DatabaseConnection:
             return False
         
         tablas = ["dueno", "mascota", "veterinario", "consulta"]
-        resultados = {}
-        
         print("\n🔍 Probando acceso a tablas...")
-        print("-" * 40)
         
+        tablas_conectadas = 0
         for tabla in tablas:
             try:
-                # Intentar consulta simple
-                response = self.client.table(tabla).select("*").limit(1).execute()
-                resultados[tabla] = {
-                    "conectada": True,
-                    "registros": len(response.data),
-                    "data": response.data
-                }
-                print(f"   ✅ {tabla}: CONECTADA ({len(response.data)} registros)")
-                
+                self.client.table(tabla).select("*").limit(1).execute()
+                print(f"   ✅ {tabla}: CONECTADA")
+                tablas_conectadas += 1
             except Exception as e:
-                resultados[tabla] = {
-                    "conectada": False, 
-                    "error": str(e),
-                    "data": []
-                }
-                error_msg = str(e)
-                if "Invalid API key" in error_msg:
-                    print(f"   ❌ {tabla}: API KEY INVÁLIDA")
-                elif "JWT" in error_msg:
-                    print(f"   ❌ {tabla}: TOKEN EXPIRADO")
-                elif "relation" in error_msg and "does not exist" in error_msg:
+                if "relation" in str(e) and "does not exist" in str(e):
                     print(f"   ❌ {tabla}: TABLA NO EXISTE")
                 else:
                     print(f"   ❌ {tabla}: Error - {str(e)[:80]}...")
         
-        return resultados
+        return tablas_conectadas == len(tablas)
 
-# Crear instancia global - ESTA ES LA LÍNEA IMPORTANTE
-db_connection = DatabaseConnection()
-
-# Alias para compatibilidad
-supabase = db_connection.get_client()
+#instancia global
+#esta instancia se importará en otros archivos
+try:
+    conexion_db = ConexionBD()
+    supabase = conexion_db.client
+except Exception as e:
+    print(f"❌ Error fatal al inicializar conexión: {e}")
+    supabase = None
 
 def test_conexion():
-    """Función para probar la conexión - compatible con tu main.py"""
-    client = db_connection.get_client()
-    if not client:
+    """Función para probar la conexión - compatible con main.py"""
+    if not supabase:
         print("❌ No se pudo inicializar Supabase")
         return False
     
@@ -96,23 +67,10 @@ def test_conexion():
     print("🔍 VERIFICACIÓN DE CONEXIÓN A SUPABASE")
     print("="*50)
     
-    resultados = db_connection.probar_tablas()
-    
-    # Verificar si al menos una tabla funciona
-    tablas_conectadas = sum(1 for r in resultados.values() if r.get("conectada"))
-    
-    if tablas_conectadas > 0:
-        print(f"\n🎉 ¡CONEXIÓN EXITOSA! {tablas_conectadas}/4 tablas accesibles")
+    if conexion_db.probar_tablas():
+        print(f"\n🎉 ¡CONEXIÓN EXITOSA! Todas las tablas accesibles.")
         return True
     else:
-        print("\n❌ NO SE PUDO ACCEDER A NINGUNA TABLA")
-        print("\n💡 SOLUCIÓN DE PROBLEMAS:")
-        print("   1. ✅ Verifica que tu proyecto esté ACTIVO en Supabase")
-        print("   2. 🔑 Obtén una nueva API Key en Settings > API")
-        print("   3. 📋 Asegúrate de que las tablas existan en Table Editor")
-        print("   4. 🌐 Verifica tu conexión a internet")
-        print("\n🔧 Verifica en: https://supabase.com/dashboard")
+        print("\n❌ FALLO EN LA CONEXIÓN O TABLAS FALTANTES")
+        print("💡 SOLUCIÓN: Verifica tus credenciales en .env y que las 4 tablas existan en Supabase.")
         return False
-
-if __name__ == "__main__":
-    test_conexion()
