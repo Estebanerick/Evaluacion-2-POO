@@ -42,7 +42,7 @@ def gestionar_registros_interactivo():
         mostrar_submenu_registros()
         opcion_crud = input("Seleccione una opción (1-4): ").strip()
 #crear registros        
-        if opcion_crud == "1":
+        if opcion_crud == "1":#(opcion_crud) es una variable que almacena la elección del usuario del submenú "Gestión de Registros".
             accion = "Registrar"
             while True:
                 mostrar_submenu_entidades(accion)

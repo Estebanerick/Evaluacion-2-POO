@@ -1,5 +1,4 @@
 #este archivo reemplaza a operaciones.py
-
 from supabase_client import supabase
 
 #clase base para herencia clase padre
@@ -53,7 +52,7 @@ class Dueno(Persona):
             
             return True
         except Exception as e:
-            print(f"❌ Error guardando dueño: {e}") #manejo de errores
+            print(f"✘ Error guardando dueño: {e}") #manejo de errores
             return False
     
     @staticmethod #es la forma correcta de agrupar funciones dentro de una clase cuando esas funciones no dependen del estado de ningún objeto en particular.
@@ -64,7 +63,7 @@ class Dueno(Persona):
             print(f"✅ Dueño ID {id_dueno} eliminado.")
             return True
         except Exception as e:
-            print(f"❌ Error eliminando dueño: {e}")
+            print(f"✘ Error eliminando dueño: {e}")
             return False
 
     @staticmethod
@@ -75,7 +74,7 @@ class Dueno(Persona):
             #retorna una lista de objetos dueno
             return [Dueno(**datos) for datos in resultado.data]
         except Exception as e:
-            print(f"❌ Error obteniendo dueños: {e}")
+            print(f"✘ Error obteniendo dueños: {e}")
             return []
 
     @staticmethod
@@ -85,7 +84,7 @@ class Dueno(Persona):
             resultado = supabase.table("dueno").select("*").ilike("nombre", f"%{nombre}%").execute()
             return [Dueno(**datos) for datos in resultado.data]
         except Exception as e:
-            print(f"❌ Error buscando dueño: {e}")
+            print(f"✘ Error buscando dueño: {e}")
             return []
             
     @staticmethod
@@ -97,7 +96,7 @@ class Dueno(Persona):
                 return Dueno(**resultado.data[0])
             return None
         except Exception as e:
-            print(f"❌ Error buscando dueño por ID: {e}")
+            print(f"✘ Error buscando dueño por ID: {e}")
             return None
 
 #case veterinario es hijo de persona
@@ -131,7 +130,7 @@ class Veterinario(Persona):
                 print(f"✅ Veterinario '{self.nombre}' creado con ID: {self.__id_veterinario}")
             return True
         except Exception as e:
-            print(f"❌ Error guardando veterinario: {e}")
+            print(f"✘ Error guardando veterinario: {e}")
             return False
             
     @staticmethod
@@ -141,7 +140,7 @@ class Veterinario(Persona):
             print(f"✅ Veterinario ID {id_veterinario} eliminado.")
             return True
         except Exception as e:
-            print(f"❌ Error eliminando veterinario: {e}")
+            print(f"✘ Error eliminando veterinario: {e}")
             return False
 
     @staticmethod
@@ -150,7 +149,7 @@ class Veterinario(Persona):
             resultado = supabase.table("veterinario").select("*").order("id_veterinario").execute()
             return [Veterinario(**datos) for datos in resultado.data]
         except Exception as e:
-            print(f"❌ Error obteniendo veterinarios: {e}")
+            print(f"✘ Error obteniendo veterinarios: {e}")
             return []
 
     @staticmethod
@@ -161,7 +160,7 @@ class Veterinario(Persona):
                 return Veterinario(**resultado.data[0])
             return None
         except Exception as e:
-            print(f"❌ Error buscando veterinario por ID: {e}")
+            print(f"✘ Error buscando veterinario por ID: {e}")
             return None
 
 
@@ -198,7 +197,7 @@ class Mascota:
                 print(f"✅ Mascota '{self.nombre}' creada con ID: {self.__id_mascota}")
             return True
         except Exception as e:
-            print(f"❌ Error guardando mascota: {e}")
+            print(f"✘ Error guardando mascota: {e}")
             return False
             
     @staticmethod
@@ -208,7 +207,7 @@ class Mascota:
             print(f"✅ Mascota ID {id_mascota} eliminada.")
             return True
         except Exception as e:
-            print(f"❌ Error eliminando mascota: {e}")
+            print(f"✘ Error eliminando mascota: {e}")
             return False
 
     @staticmethod
@@ -218,7 +217,7 @@ class Mascota:
             resultado = supabase.table("mascota").select("*, dueno(nombre)").order("id_mascota").execute()
             return [Mascota(**datos) for datos in resultado.data]
         except Exception as e:
-            print(f"❌ Error obteniendo mascotas: {e}")
+            print(f"✘ Error obteniendo mascotas: {e}")
             return []
             
     @staticmethod
@@ -233,7 +232,7 @@ class Mascota:
                 return Mascota(**datos)
             return None
         except Exception as e:
-            print(f"❌ Error buscando mascota por ID: {e}")
+            print(f"✘ Error buscando mascota por ID: {e}")
             return None
             
     @staticmethod
@@ -242,7 +241,7 @@ class Mascota:
             resultado = supabase.table("mascota").select("*").eq("id_dueno", id_dueno).execute()
             return [Mascota(**datos) for datos in resultado.data]
         except Exception as e:
-            print(f"❌ Error obteniendo mascotas del dueño: {e}")
+            print(f"✘ Error obteniendo mascotas del dueño: {e}")
             return []
 
     @staticmethod
@@ -251,7 +250,7 @@ class Mascota:
             resultado = supabase.table("mascota").select("*, dueno(nombre)").ilike("nombre", f"%{nombre}%").execute()
             return [Mascota(**datos) for datos in resultado.data]
         except Exception as e:
-            print(f"❌ Error buscando mascota: {e}")
+            print(f"✘ Error buscando mascota: {e}")
             return []
 
 #clase consulta
@@ -288,7 +287,7 @@ class Consulta:
             print(f"✅ Consulta creada con ID: {self.__id_consulta}")
             return True
         except Exception as e:
-            print(f"❌ Error creando consulta: {e}")
+            print(f"✘ Error creando consulta: {e}")
             return False
 
     @staticmethod
@@ -297,7 +296,7 @@ class Consulta:
             resultado = supabase.table("consulta").select("*, veterinario(nombre, especialidad)").eq("id_mascota", id_mascota).order("fecha_consulta", desc=True).execute()
             return [Consulta(**datos) for datos in resultado.data]
         except Exception as e:
-            print(f"❌ Error obteniendo consultas: {e}")
+            print(f"✘ Error obteniendo consultas: {e}")
             return []
 
     @staticmethod
@@ -306,7 +305,7 @@ class Consulta:
             resultado = supabase.table("consulta").select("*, mascota(nombre, especie), veterinario(nombre)").order("fecha_consulta", desc=True).execute()
             return [Consulta(**datos) for datos in resultado.data]
         except Exception as e:
-            print(f"❌ Error obteniendo consultas: {e}")
+            print(f"✘ Error obteniendo consultas: {e}")
             return []
 
 
@@ -332,7 +331,7 @@ def reporte_historial_completo(id_mascota):
         }
         
     except Exception as e:
-        print(f"❌ Error generando reporte: {e}")
+        print(f"✘ Error generando reporte: {e}")
         return None
 
 def estadisticas_veterinaria():
@@ -352,7 +351,7 @@ def estadisticas_veterinaria():
         }
         
     except Exception as e:
-        print(f"❌ Error obteniendo estadísticas: {e}")
+        print(f"✘ Error obteniendo estadísticas: {e}")
         return {}
     
 #El Método Estático (Dueno.obtener_todos()) 
