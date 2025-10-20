@@ -1,8 +1,7 @@
 #inportamos libreria de supabase para que se conecte con la base de datos
 from supabase_client import test_conexion
 #importamos las clases y funciones desde modelos.py
-from modelos import Dueno, Mascota, Veterinario, Consulta, \
-                    reporte_historial_completo, estadisticas_veterinaria
+from modelos import (Dueno, Mascota, Veterinario, Consulta, Pago, reporte_historial_completo, estadisticas_veterinaria)
 
 #apartado visual del menu
 def mostrar_menu():
@@ -26,13 +25,23 @@ def mostrar_submenu_registros():
     print("4. Volver al Menú Principal")
     print("="*50)
 
+# --- FUNCIÓN MODIFICADA ---
 #apartado visual del submenu_entidades
 def mostrar_submenu_entidades(accion):
     print(f"\n--- {accion.upper()} REGISTRO ---")#{accion.upper()} Se usa para crear un título de menú dinámico que siempre esté en mayúsculas.
     print("1. Dueño")
     print("2. Mascota")
     print("3. Veterinario")
-    print("4. Consulta (Solo Registrar)")
+    
+    # --- Lógica de texto dinámico ---
+    if accion == "Registrar":
+        print("4. Consulta")
+    elif accion == "Actualizar":
+        print("4. Consulta") # Esta opción llama a actualizar_consulta_interactivo
+    elif accion == "Eliminar":
+        print("4. Consulta (No implementado)") # Texto actualizado
+    # --- Fin de la lógica ---
+
     print("5. Volver")
     print("="*50)
 
@@ -64,10 +73,10 @@ def gestionar_registros_interactivo():
                 if opcion_entidad == "1": actualizar_dueno_interactivo()
                 elif opcion_entidad == "2": actualizar_mascota_interactivo()
                 elif opcion_entidad == "3": actualizar_veterinario_interactivo()
-                elif opcion_entidad == "4": print("La actualización de consultas no está implementada.")
+                elif opcion_entidad == "4": actualizar_consulta_interactivo()
                 elif opcion_entidad == "5": break
                 else: print("Opción inválida.")
-                if opcion_entidad in ["1", "2", "3"]:
+                if opcion_entidad in ["1", "2", "3", "4"]:
                     input("\nPresione Enter para continuar...")
 #apartado de eliminar
         elif opcion_crud == "3":
@@ -90,7 +99,6 @@ def gestionar_registros_interactivo():
         else:
             print("Opción inválida. Intente de nuevo.")
 
-
 #funcion para registrar dueños
 def registrar_dueno_interactivo():
     print("\n--- REGISTRAR NUEVO DUEÑO ---")
@@ -105,7 +113,85 @@ def registrar_dueno_interactivo():
     
 #usamos la Clase
     nuevo_dueno = Dueno(nombre, direccion, telefono, email)
-    nuevo_dueno.guardar() 
+    nuevo_dueno.guardar()
+
+#funcion para registrar consultas
+def registrar_consulta_interactivo():
+    print("\n--- REGISTRAR CONSULTA MÉDICA ---")
+    mascotas = Mascota.obtener_todas()
+    if not mascotas:
+        print("No hay mascotas registradas.")
+        return
+    
+    motivo = input("Motivo de la consulta: ").strip()
+    if not motivo:
+        print("El motivo es obligatorio")
+        return
+    
+    diagnostico = input("Diagnóstico: ").strip() or None
+    tratamiento = input("Tratamiento: ").strip() or None
+    observaciones = input("Observaciones: ").strip() or None
+    
+    costo = 0.0
+    metodo_pago = None #variable para guardar el método
+    
+    try:
+#pide el costo
+        costo_input = input("Costo de la consulta (ej: 15000): ").strip()
+        costo = float(costo_input) if costo_input else 0.0
+        if costo > 0:
+            print("\nRegistrar pago inmediato (opcional):")
+            print("  1. Efectivo | 2. Tarjeta | 3. Transferencia | (Enter para no pagar aún)")
+            metodo_opcion = input("Seleccione método: ").strip()
+            
+            metodos = {"1": "Efectivo", "2": "Tarjeta", "3": "Transferencia"}
+            if metodo_opcion in metodos:
+                metodo_pago = metodos[metodo_opcion]
+                print(f"Se registrará un pago por ${costo} en {metodo_pago}.")
+            else:
+                print("La consulta se guardará como 'Pendiente de Pago'.")
+        
+    except ValueError:
+        print("Costo inválido, se registrará como 0.")
+        costo = 0.0
+    
+    print("\nMascotas disponibles:")
+    for m in mascotas:
+        dueño_nombre = m.dueno['nombre'] if m.dueno else "N/A" 
+        print(f"  ID: {m.id_mascota} - {m.nombre} (Dueño: {dueño_nombre})")
+    
+    try:
+        id_mascota = int(input("\nID de la mascota: ").strip())
+        
+        veterinarios = Veterinario.obtener_todos()
+        id_veterinario = None
+        if veterinarios:
+            print("\nVeterinarios disponibles (opcional):")
+            for v in veterinarios:
+                print(f"  ID: {v.id_veterinario} - {v.nombre}")
+            
+            vet_input = input("ID del veterinario (enter para omitir): ").strip()
+            if vet_input:
+                id_veterinario = int(vet_input)
+        
+        #guardar la consulta
+        nueva_consulta = Consulta(id_mascota, motivo, diagnostico, tratamiento, 
+                                  observaciones, id_veterinario, costo)
+        
+        if nueva_consulta.guardar(): #comprueba si la consulta se guardó bien
+            
+            # 2. Si hay método de pago, guardar el pago
+            if metodo_pago:
+                id_nueva_consulta = nueva_consulta.id_consulta #obtenemos el id de la consulta recién creada
+                pago_asociado = Pago(id_consulta=id_nueva_consulta, 
+                                     monto=costo, 
+                                     metodo_pago=metodo_pago)
+                pago_asociado.guardar() #guardamos el pago en la tabla pago
+        else:
+            print("✘ Error: No se pudo guardar la consulta.")
+
+    except ValueError:
+        print("Los IDs deben ser números")
 
 #funcion para registrar mascotas
 def registrar_mascota_interactivo():
@@ -153,53 +239,9 @@ def registrar_veterinario_interactivo():
     telefono = input("Teléfono: ").strip() or None
     email = input("Email: ").strip() or None
     
-#usamos la Clase
+#usamos la clase
     nuevo_vet = Veterinario(nombre, especialidad, telefono, email)
     nuevo_vet.guardar()
-
-
-#funcion para registrar consultas
-def registrar_consulta_interactivo():
-    print("\n--- REGISTRAR CONSULTA MÉDICA ---")
-    mascotas = Mascota.obtener_todas()
-    if not mascotas:
-        print("No hay mascotas registradas.")
-        return
-    
-    motivo = input("Motivo de la consulta: ").strip()
-    if not motivo:
-        print("El motivo es obligatorio")
-        return
-    
-    diagnostico = input("Diagnóstico: ").strip() or None
-    tratamiento = input("Tratamiento: ").strip() or None
-    observaciones = input("Observaciones: ").strip() or None
-    
-    print("\nMascotas disponibles:")
-    for m in mascotas:
-        dueño_nombre = m.dueno['nombre'] if m.dueno else "N/A" 
-        print(f"  ID: {m.id_mascota} - {m.nombre} (Dueño: {dueño_nombre})")
-    
-    try:
-        id_mascota = int(input("\nID de la mascota: ").strip())
-        
-        veterinarios = Veterinario.obtener_todos()
-        id_veterinario = None
-        if veterinarios:
-            print("\nVeterinarios disponibles (opcional):")
-            for v in veterinarios:
-                print(f"  ID: {v.id_veterinario} - {v.nombre}")
-            
-            vet_input = input("ID del veterinario (enter para omitir): ").strip()
-            if vet_input:
-                id_veterinario = int(vet_input)
-        
-#usamos la Clase
-        nueva_consulta = Consulta(id_mascota, motivo, diagnostico, tratamiento, 
-                                  observaciones, id_veterinario)
-        nueva_consulta.guardar()
-    except ValueError:
-        print("Los IDs deben ser números")
 
 #funcion actualizar dueño
 def actualizar_dueno_interactivo():
@@ -249,7 +291,6 @@ def actualizar_mascota_interactivo():
     except ValueError:
         print("El ID debe ser un número")
 
-
 #funcion actualizar veterinario
 def actualizar_veterinario_interactivo():
     print("\n--- ACTUALIZAR VETERINARIO ---")
@@ -268,6 +309,45 @@ def actualizar_veterinario_interactivo():
         vet.email = input(f"Email ({vet.email}): ").strip() or vet.email
         
         vet.guardar()
+
+    except ValueError:
+        print("El ID debe ser un número")
+
+def actualizar_consulta_interactivo():
+    print("\n--- ACTUALIZAR CONSULTA ---")
+    try:
+        id_consulta = int(input("ID de la consulta a actualizar: ").strip())
+#usamos el método que ya existe
+        consulta = Consulta.buscar_por_id(id_consulta) 
+        
+        if not consulta:
+            print("❌ Consulta no encontrada.")
+            return
+
+        print(f"Actualizando consulta (Mascota: {consulta.mascota['nombre']})")
+        print(f"Dejar en blanco para no cambiar el valor.")
+        
+        # Pedimos los nuevos valores
+        motivo = input(f"Motivo ({consulta.motivo}): ").strip() or consulta.motivo
+        diagnostico = input(f"Diagnóstico ({consulta.diagnostico}): ").strip() or consulta.diagnostico
+        tratamiento = input(f"Tratamiento ({consulta.tratamiento}): ").strip() or consulta.tratamiento
+        
+        # --- AQUÍ ESTÁ EL CAMBIO IMPORTANTE ---
+        costo_actual = consulta.costo if consulta.costo is not None else 0.0
+        costo_input = input(f"Costo (${costo_actual}): ").strip()
+        
+        if costo_input:
+            try:
+                nuevo_costo = float(costo_input)
+                consulta.costo = nuevo_costo
+            except ValueError:
+                print("Costo inválido, se mantiene el anterior.")
+        
+#asignamos los valores al objeto
+        consulta.motivo = motivo
+        consulta.diagnostico = diagnostico
+        consulta.tratamiento = tratamiento
+        consulta.guardar()
 
     except ValueError:
         print("El ID debe ser un número")
@@ -292,7 +372,6 @@ def eliminar_mascota_interactivo():
     except ValueError:
         print("El ID debe ser un número")
 
-
 #funcion eliminar veterinario
 def eliminar_veterinario_interactivo():
     print("\n--- ELIMINAR VETERINARIO ---")
@@ -302,7 +381,6 @@ def eliminar_veterinario_interactivo():
             Veterinario.eliminar(id_vet)
     except ValueError:
         print("El ID debe ser un número")
-
 
 #funcion buscar por nombre
 def buscar_por_nombre_interactivo():
@@ -333,7 +411,6 @@ def buscar_por_nombre_interactivo():
             print(f"  {m.id_mascota} | {m.nombre} | {m.especie} | Dueño: {dueño_nombre}")
     else:
         print("  No se encontraron mascotas")
-
 
 #funcion historial
 def reporte_historial_interactivo():
@@ -425,15 +502,13 @@ def listar_registros_interactivo():
         for c in consultas:
             mascota_nombre = c.mascota['nombre'] if c.mascota else "N/A"
             vet_nombre = c.veterinario['nombre'] if c.veterinario else "No asignado"
-            print(f"   {c.id_consulta} | {c.fecha_consulta} | {mascota_nombre} | {vet_nombre}")
+            print(f"   {c.id_consulta} | {c.fecha_consulta} | ${c.costo} | {mascota_nombre} | {vet_nombre}")
 
 #funcion del menu
 def main():
     if not test_conexion():
         print("Saliendo del programa.")
         return
-    
-    print("🎉 ¡Sistema de Gestión Veterinaria conectado correctamente!")
     
     while True:
         mostrar_menu()
@@ -448,7 +523,7 @@ def main():
         elif opcion == "4":
             ver_estadisticas_interactivo()
         elif opcion == "5":
-            listar_registros_interactivo()
+            listar_registros_interactivo()      
         elif opcion == "6":
             print("\n ¡Gracias por usar el Sistema de Gestión Veterinaria!")
             break

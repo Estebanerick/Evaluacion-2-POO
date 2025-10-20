@@ -68,7 +68,7 @@ def test_conexion():
     print("="*50)
     
     if conexion_db.probar_tablas():
-        print(f"\n🎉 ¡CONEXIÓN EXITOSA! Todas las tablas accesibles.")
+        print(f"\n¡CONEXIÓN EXITOSA! Todas las tablas accesibles.")
         return True
     else:
         print("\n❌ FALLO EN LA CONEXIÓN O TABLAS FALTANTES")
