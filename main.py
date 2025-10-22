@@ -37,7 +37,7 @@ def mostrar_submenu_entidades(accion):
     elif accion == "Actualizar":
         print("4. Consulta") #esta opción llama a actualizar_consulta_interactivo
     elif accion == "Eliminar":
-        print("4. Consulta (No implementado)"
+        print("4. Consulta (No implementado)")
 
 
     print("5. Volver")
