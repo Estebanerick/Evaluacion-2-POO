@@ -1,24 +1,16 @@
-# prueba-2 Caso 5 – Clínica Veterinaria
+prueba-2 Caso 5 – Clínica Veterinaria
 
-# ----------------------------------------------------------------
-Se comenzo por la base de datos debido a que se tuvieron complicaciones con la aplicacion de base de datos al vincularla con el visual asi que decidimos empezar a avanza con la base de datos por que empezar por el codigo pensamos que iba a ser algo enrredado debido a que no pudimos conectarlo a la base de datos.
+Se comenzó por la base de datos debido a que se tuvieron complicaciones con la aplicación de base de datos al vincularla con el visual, así que decidimos empezar a avanzar con la base de datos porque empezar por el código pensamos que iba a ser algo enredado debido a que no pudimos conectarlo a la base de datos.
 
-se agrego el archivo conexion_estudiante.py el cual se utilizara como base para empezar la conexion con la base de datos de la veterinaria.
+Se agregó el archivo conexion_estudiante.py, el cual se utilizará como base para empezar la conexión con la base de datos de la veterinaria.
 
-# ----------------------------------------------------------------
+Se modificó el archivo conexion_estudiante.py, pasó a ser el archivo veterinaria.py, se hizo un renombramiento y adaptación de funciones para que sean acordes al tema y a la base de datos. Se creó una nueva interfaz de usuario y menú para que sea acorde al tema que se solicitó. Las consultas SQL fueron modificadas para que se ingresen los datos acorde a la base de datos creada. Se comentó dentro del código qué hace cada cosa.
 
-se modifico el archivo conexion_estudiante.py paso a ser el archivo veterinaria.py se hizo un renombramiento y Adaptación de Funciones para que sean acordes al tema y a la base de datos se creo una nueva interfaz de usuario y Menú para que sea acorde de el tema que se solicito, las consutas sql fueron modificadas para que se ingresen los datos acorde de la base de datos creada.
-se comento dentro del codigo el que hace cada cosa
+Se logró entablar una buena conexión con una base de datos, pero se tuvo que cambiar de aplicación de base de datos. Se pasó a utilizar la aplicación Oracle SQL. Se tiene que mejorar mucho el código porque debido a que se cambió de base de datos, se tiene que modificar bastante el código y poner verificaciones, pero se va por buen camino.
 
-# ----------------------------------------------------------------
+Volvimos a tener problemas con la base de datos, lo que nos llevó a modificar el trabajo entero. Realizamos un cambio de base de datos, pasamos a utilizar la base de datos Supabase, la cual nos facilitó el trabajo con el código. Modificamos el código y nos cambiamos de repositorio para estar más cómodos.
 
-se logro entablar una buena conexion con una base de datos pero se tubo que cambiar de aplicacion de base de datos se paso a utilizar la aplicacion oracle sql se tiene que mejorar mucho el codigo por que devido a que se cambio de base de datos se tiene que modificar vastante el codigo y poner verificaciones pero se va por buen camino
-
-# ----------------------------------------------------------------
-
-volvimos a tener problemas con las base de datos lo que nos llevo a modificar el trabajo entero, realizamos un cambio de base de datos pasamos a utilizar la base de datos supabase la cual nos facilito el trabajo con el codigo, modificamos el codigo y nos cambiamos de repositorio para estar mas comodos.
-
-los cambios en el codigo fueron muy grandes cambiamos los nombres y creamos archivos nuevos que eran necesarios para la conecion y implementamos archivos exclusivos para siertas funciones como el archivo supabase_cliente.py que es el archivo encargado de la conexion con la base de datos, el archivo modelos.py el que es encargado de contener las clases con sus herencias y algunas funciones. el archivo main.py que antes era veterinaria.py es el que mas cambios sufrio paso de contener todo a ser algo mas estructurado para que trabaje con los demas archivos y no este todo centralizado y desordenado 
+Los cambios en el código fueron muy grandes. Cambiamos los nombres y creamos archivos nuevos que eran necesarios para la conexión, e implementamos archivos exclusivos para ciertas funciones, como el archivo supabase_cliente.py, que es el archivo encargado de la conexión con la base de datos; el archivo modelos.py, que es encargado de contener las clases con sus herencias y algunas funciones; y el archivo main.py, que antes era veterinaria.py, es el que más cambios sufrió: pasó de contener todo a ser algo más estructurado para que trabaje con los demás archivos y no esté todo centralizado y desordenado.
 
 ## Librerías necesarias
 
