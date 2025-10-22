@@ -25,7 +25,6 @@ def mostrar_submenu_registros():
     print("4. Volver al Menú Principal")
     print("="*50)
 
-# --- FUNCIÓN MODIFICADA ---
 #apartado visual del submenu_entidades
 def mostrar_submenu_entidades(accion):
     print(f"\n--- {accion.upper()} REGISTRO ---")#{accion.upper()} Se usa para crear un título de menú dinámico que siempre esté en mayúsculas.
@@ -33,14 +32,13 @@ def mostrar_submenu_entidades(accion):
     print("2. Mascota")
     print("3. Veterinario")
     
-    # --- Lógica de texto dinámico ---
     if accion == "Registrar":
         print("4. Consulta")
     elif accion == "Actualizar":
-        print("4. Consulta") # Esta opción llama a actualizar_consulta_interactivo
+        print("4. Consulta") #esta opción llama a actualizar_consulta_interactivo
     elif accion == "Eliminar":
-        print("4. Consulta (No implementado)") # Texto actualizado
-    # --- Fin de la lógica ---
+        print("4. Consulta (No implementado)") #texto actualizado
+
 
     print("5. Volver")
     print("="*50)
@@ -174,13 +172,13 @@ def registrar_consulta_interactivo():
             if vet_input:
                 id_veterinario = int(vet_input)
         
-        #guardar la consulta
+#guardar la consulta
         nueva_consulta = Consulta(id_mascota, motivo, diagnostico, tratamiento, 
                                   observaciones, id_veterinario, costo)
         
         if nueva_consulta.guardar(): #comprueba si la consulta se guardó bien
             
-            # 2. Si hay método de pago, guardar el pago
+#si hay método de pago, guardar el pago
             if metodo_pago:
                 id_nueva_consulta = nueva_consulta.id_consulta #obtenemos el id de la consulta recién creada
                 pago_asociado = Pago(id_consulta=id_nueva_consulta, 
@@ -327,12 +325,11 @@ def actualizar_consulta_interactivo():
         print(f"Actualizando consulta (Mascota: {consulta.mascota['nombre']})")
         print(f"Dejar en blanco para no cambiar el valor.")
         
-        # Pedimos los nuevos valores
+#pedimos los nuevos valores
         motivo = input(f"Motivo ({consulta.motivo}): ").strip() or consulta.motivo
         diagnostico = input(f"Diagnóstico ({consulta.diagnostico}): ").strip() or consulta.diagnostico
         tratamiento = input(f"Tratamiento ({consulta.tratamiento}): ").strip() or consulta.tratamiento
-        
-        # --- AQUÍ ESTÁ EL CAMBIO IMPORTANTE ---
+#costo
         costo_actual = consulta.costo if consulta.costo is not None else 0.0
         costo_input = input(f"Costo (${costo_actual}): ").strip()
         
