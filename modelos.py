@@ -385,6 +385,7 @@ def reporte_historial_completo(id_mascota):
         print(f"✘ Error generando reporte: {e}")
         return None
 
+
 def estadisticas_veterinaria():
     """Estadísticas generales de la veterinaria"""
     try:

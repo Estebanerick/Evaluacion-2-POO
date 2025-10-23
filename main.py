@@ -311,6 +311,7 @@ def actualizar_veterinario_interactivo():
     except ValueError:
         print("El ID debe ser un número")
 
+#funcion actualizar consulta
 def actualizar_consulta_interactivo():
     print("\n--- ACTUALIZAR CONSULTA ---")
     try:
